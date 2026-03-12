@@ -10,13 +10,18 @@ db.exec(`
   CREATE TABLE IF NOT EXISTS players (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
+    age INTEGER,
     position TEXT,
     location TEXT DEFAULT 'Oakland',
     grad_year INTEGER,
+    height TEXT,
+    weight TEXT,
     stats TEXT, -- JSON string
     benchmarks TEXT, -- JSON string
     highlights_url TEXT,
     bio TEXT,
+    achievements TEXT, -- JSON string
+    references_data TEXT, -- JSON string
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   );
 
@@ -35,9 +40,12 @@ if (playerCount.count === 0) {
   const playersToSeed = [
     {
       name: "Julian Rivera",
+      age: 16,
       position: "Central Midfielder",
       location: "Oakland",
       grad_year: 2026,
+      height: "5'10\"",
+      weight: "155 lbs",
       stats: { goals: 4, assists: 12, appearances: 18 },
       benchmarks: {
         benchmark_group: "U16 Central Midfielders",
@@ -50,13 +58,21 @@ if (playerCount.count === 0) {
         is_verified: true
       },
       highlights_url: "https://example.com/julian-highlights",
-      bio: "Technical playmaker with a high football IQ. Looking to play at the D1 level."
+      bio: "Technical playmaker with a high football IQ. Looking to play at the D1 level.",
+      achievements: ["All-State First Team 2025", "Regional ODP Selection", "Oakland Cup MVP"],
+      references: [
+        { name: "Coach Mike Smith", role: "Head Coach, Oakland FC", contact: "mike@oaklandfc.com" },
+        { name: "Sarah Jenkins", role: "Technical Director", contact: "sarah@academy.com" }
+      ]
     },
     {
       name: "Marcus Chen",
+      age: 17,
       position: "Winger",
       location: "San Francisco",
       grad_year: 2025,
+      height: "5'8\"",
+      weight: "145 lbs",
       stats: { goals: 14, assists: 8, appearances: 22 },
       benchmarks: {
         benchmark_group: "U17 Wingers",
@@ -69,13 +85,20 @@ if (playerCount.count === 0) {
         is_verified: true
       },
       highlights_url: "https://example.com/marcus-highlights",
-      bio: "Dynamic winger with pace and clinical finishing. 4-year varsity starter."
+      bio: "Dynamic winger with pace and clinical finishing. 4-year varsity starter.",
+      achievements: ["League Golden Boot 2024", "State Champion 2024"],
+      references: [
+        { name: "Coach David Lee", role: "Varsity Coach", contact: "dlee@sfhigh.edu" }
+      ]
     },
     {
       name: "Sarah Williams",
+      age: 16,
       position: "Center Back",
       location: "Oakland",
       grad_year: 2026,
+      height: "5'11\"",
+      weight: "160 lbs",
       stats: { tackles: 45, interceptions: 32, appearances: 20 },
       benchmarks: {
         benchmark_group: "U16 Center Backs",
@@ -88,13 +111,20 @@ if (playerCount.count === 0) {
         is_verified: true
       },
       highlights_url: "https://example.com/sarah-highlights",
-      bio: "Commanding presence in defense. Strong communicator and tactical leader."
+      bio: "Commanding presence in defense. Strong communicator and tactical leader.",
+      achievements: ["Defensive Player of the Year 2025", "Honor Roll Student"],
+      references: [
+        { name: "Coach Robert Brown", role: "Club Coach", contact: "rbrown@soccer.com" }
+      ]
     },
     {
       name: "Leo Rodriguez",
+      age: 15,
       position: "Goalkeeper",
       location: "Berkeley",
       grad_year: 2027,
+      height: "6'2\"",
+      weight: "175 lbs",
       stats: { cleanSheets: 8, saves: 64, appearances: 15 },
       benchmarks: {
         benchmark_group: "U15 Goalkeepers",
@@ -107,25 +137,34 @@ if (playerCount.count === 0) {
         is_verified: true
       },
       highlights_url: "https://example.com/leo-highlights",
-      bio: "Agile shot-stopper with great distribution. Trained with regional ODP teams."
+      bio: "Agile shot-stopper with great distribution. Trained with regional ODP teams.",
+      achievements: ["Regional ODP Pool", "Junior Varsity Captain"],
+      references: [
+        { name: "Coach Elena Gomez", role: "GK Coach", contact: "egomez@keepers.com" }
+      ]
     }
   ];
 
   const insertStmt = db.prepare(`
-    INSERT INTO players (name, position, location, grad_year, stats, benchmarks, highlights_url, bio)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO players (name, age, position, location, grad_year, height, weight, stats, benchmarks, highlights_url, bio, achievements, references_data)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
 
   for (const player of playersToSeed) {
     insertStmt.run(
       player.name,
+      player.age,
       player.position,
       player.location,
       player.grad_year,
+      player.height,
+      player.weight,
       JSON.stringify(player.stats),
       JSON.stringify(player.benchmarks),
       player.highlights_url,
-      player.bio
+      player.bio,
+      JSON.stringify(player.achievements),
+      JSON.stringify(player.references)
     );
   }
 }
@@ -142,16 +181,32 @@ async function startServer() {
     res.json(players.map(p => ({
       ...p,
       stats: JSON.parse(p.stats || "{}"),
-      benchmarks: JSON.parse(p.benchmarks || "null")
+      benchmarks: JSON.parse(p.benchmarks || "null"),
+      achievements: JSON.parse(p.achievements || "[]"),
+      references: JSON.parse(p.references_data || "[]")
     })));
   });
 
   app.post("/api/players", (req, res) => {
-    const { name, position, location, grad_year, stats, benchmarks, highlights_url, bio } = req.body;
+    const { name, age, position, location, grad_year, height, weight, stats, benchmarks, highlights_url, bio, achievements, references } = req.body;
     const info = db.prepare(`
-      INSERT INTO players (name, position, location, grad_year, stats, benchmarks, highlights_url, bio)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    `).run(name, position, location, grad_year, JSON.stringify(stats), JSON.stringify(benchmarks || null), highlights_url, bio);
+      INSERT INTO players (name, age, position, location, grad_year, height, weight, stats, benchmarks, highlights_url, bio, achievements, references_data)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      name, 
+      age, 
+      position, 
+      location, 
+      grad_year, 
+      height, 
+      weight, 
+      JSON.stringify(stats), 
+      JSON.stringify(benchmarks || null), 
+      highlights_url, 
+      bio,
+      JSON.stringify(achievements || []),
+      JSON.stringify(references || [])
+    );
     res.json({ id: info.lastInsertRowid });
   });
 
@@ -167,7 +222,9 @@ async function startServer() {
     res.json({
       ...player,
       stats: JSON.parse(player.stats || "{}"),
-      benchmarks: JSON.parse(player.benchmarks || "null")
+      benchmarks: JSON.parse(player.benchmarks || "null"),
+      achievements: JSON.parse(player.achievements || "[]"),
+      references: JSON.parse(player.references_data || "[]")
     });
   });
 

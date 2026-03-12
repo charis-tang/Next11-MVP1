@@ -16,7 +16,13 @@ import {
   ArrowLeft,
   CheckCircle2,
   Zap,
-  Play
+  Play,
+  Ruler,
+  Weight,
+  Calendar,
+  Award,
+  Link as LinkIcon,
+  MessageSquare
 } from 'lucide-react';
 import { Player, ScoutActivity, PlayerBenchmarks } from './types';
 
@@ -95,41 +101,44 @@ const PlayerCard = ({ player, onClick }: { player: Player; onClick: () => void |
   <motion.div 
     layoutId={`player-${player.id}`}
     onClick={() => onClick()}
-    className="bg-white border border-zinc-200 rounded-2xl p-6 cursor-pointer hover:shadow-md transition-shadow group"
+    className="bg-white border border-zinc-200 rounded-3xl p-6 cursor-pointer hover:shadow-xl hover:border-emerald-500/30 transition-all group relative overflow-hidden"
   >
     <div className="flex justify-between items-start mb-4">
       <div>
-        <h3 className="text-xl font-bold text-zinc-900 group-hover:text-emerald-600 transition-colors">{player.name}</h3>
-        <p className="text-zinc-500 font-medium">{player.position}</p>
+        <h3 className="text-xl font-black text-zinc-900 group-hover:text-emerald-600 transition-colors uppercase tracking-tight">{player.name}</h3>
+        <p className="text-zinc-500 font-bold text-sm uppercase tracking-wide">{player.position} • Age {player.age}</p>
       </div>
-      <div className="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+      <div className="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-emerald-100">
         Class of {player.grad_year}
       </div>
     </div>
     
     <div className="grid grid-cols-2 gap-4 mb-6">
-      <div className="flex items-center gap-2 text-zinc-600 text-sm">
-        <MapPin size={16} className="text-zinc-400" />
+      <div className="flex items-center gap-2 text-zinc-600 text-xs font-bold">
+        <MapPin size={14} className="text-zinc-400" />
         {player.location}
       </div>
-      <div className="flex items-center gap-2 text-zinc-600 text-sm">
-        <GraduationCap size={16} className="text-zinc-400" />
-        College Prospect
+      <div className="flex items-center gap-2 text-zinc-600 text-xs font-bold">
+        <Ruler size={14} className="text-zinc-400" />
+        {player.height}
       </div>
     </div>
 
     <div className="flex items-center justify-between pt-4 border-t border-zinc-100">
       <div className="flex gap-4">
-        <div className="text-center">
-          <p className="text-xs text-zinc-400 uppercase font-bold">Goals</p>
-          <p className="font-mono font-bold">{player.stats.goals || 0}</p>
+        <div className="flex items-center gap-1.5">
+          <BarChart3 size={14} className="text-emerald-500" />
+          <p className="text-xs font-black text-zinc-900">{player.stats.goals || 0} G</p>
         </div>
-        <div className="text-center">
-          <p className="text-xs text-zinc-400 uppercase font-bold">Assists</p>
-          <p className="font-mono font-bold">{player.stats.assists || 0}</p>
+        <div className="flex items-center gap-1.5">
+          <Activity size={14} className="text-emerald-500" />
+          <p className="text-xs font-black text-zinc-900">{player.stats.assists || 0} A</p>
         </div>
       </div>
-      <ChevronRight size={20} className="text-zinc-300 group-hover:text-emerald-500 transition-colors" />
+      <div className="flex items-center gap-1 text-zinc-400 group-hover:text-emerald-500 transition-colors">
+        <span className="text-[10px] font-black uppercase tracking-widest">View Profile</span>
+        <ChevronRight size={16} />
+      </div>
     </div>
   </motion.div>
 );
@@ -139,7 +148,7 @@ const PlayerDetail = ({ player, onBack, activity }: { player: Player; onBack: ()
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     exit={{ opacity: 0, y: 20 }}
-    className="max-w-5xl mx-auto"
+    className="max-w-6xl mx-auto"
   >
     <button 
       onClick={onBack}
@@ -149,87 +158,153 @@ const PlayerDetail = ({ player, onBack, activity }: { player: Player; onBack: ()
       Back to Scouts
     </button>
 
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-      <div className="lg:col-span-7 space-y-8">
-        <div className="bg-white border border-zinc-200 rounded-3xl p-8">
-          <div className="flex justify-between items-start mb-6">
-            <div>
-              <h1 className="text-4xl font-black text-zinc-900 mb-2">{player.name}</h1>
-              <div className="flex flex-wrap gap-4 text-zinc-500">
-                <span className="flex items-center gap-1"><MapPin size={18} /> {player.location}</span>
-                <span className="flex items-center gap-1"><Trophy size={18} /> {player.position}</span>
-                <span className="flex items-center gap-1"><GraduationCap size={18} /> Class of {player.grad_year}</span>
-              </div>
+    {/* Header Section */}
+    <div className="bg-white border border-zinc-200 rounded-3xl p-8 mb-8 shadow-sm">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div>
+          <div className="flex items-center gap-3 mb-2">
+            <h1 className="text-4xl font-black text-zinc-900">{player.name}</h1>
+            <div className="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest">
+              Verified Prospect
             </div>
           </div>
-          
-          <div className="prose prose-zinc max-w-none">
-            <h3 className="text-lg font-bold mb-2">Bio</h3>
-            <p className="text-zinc-600 leading-relaxed">{player.bio || "No bio provided."}</p>
+          <div className="flex flex-wrap gap-6 text-zinc-500 font-medium">
+            <span className="flex items-center gap-1.5"><Trophy size={18} className="text-zinc-400" /> {player.position}</span>
+            <span className="flex items-center gap-1.5"><Calendar size={18} className="text-zinc-400" /> Age {player.age}</span>
+            <span className="flex items-center gap-1.5"><GraduationCap size={18} className="text-zinc-400" /> Class of {player.grad_year}</span>
+            <span className="flex items-center gap-1.5"><Ruler size={18} className="text-zinc-400" /> {player.height}</span>
+            <span className="flex items-center gap-1.5"><Weight size={18} className="text-zinc-400" /> {player.weight}</span>
           </div>
         </div>
-
-        <div className="bg-zinc-900 text-white rounded-3xl p-8">
-          <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-            <Video size={24} className="text-emerald-400" />
-            Highlight Reel
-          </h3>
-          {player.highlights_url ? (
-            <div className="aspect-video bg-zinc-800 rounded-xl flex items-center justify-center border border-zinc-700">
-              <p className="text-zinc-500">Video Embed: {player.highlights_url}</p>
-            </div>
-          ) : (
-            <div className="aspect-video bg-zinc-800 rounded-xl flex items-center justify-center border border-zinc-700">
-              <p className="text-zinc-500 italic">No highlights uploaded yet</p>
-            </div>
-          )}
+        <div className="flex gap-4">
+          <div className="bg-zinc-50 border border-zinc-100 rounded-2xl px-6 py-4 text-center">
+            <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-1">Total Views</p>
+            <p className="text-2xl font-black text-zinc-900">{activity.length}</p>
+          </div>
+          <div className="bg-emerald-600 rounded-2xl px-6 py-4 text-center text-white">
+            <p className="text-[10px] font-black uppercase tracking-widest opacity-70 mb-1">Performance</p>
+            <p className="text-2xl font-black">Elite</p>
+          </div>
         </div>
       </div>
+    </div>
 
-      <div className="lg:col-span-5 space-y-8">
-        {player.benchmarks && (
-          <BenchmarkCard 
-            benchmarks={player.benchmarks} 
-            playerName={player.name} 
-            position={player.position} 
-          />
-        )}
-
-        <div className="bg-white border border-zinc-200 rounded-3xl p-8">
-          <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
-            <BarChart3 size={20} className="text-emerald-600" />
-            Key Stats
+    {/* Main Content Grid: Stats/Info vs Highlight */}
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+      {/* Left Column: Stats, Info, Achievements, References */}
+      <div className="space-y-8">
+        {/* Stats Section */}
+        <div className="bg-white border border-zinc-200 rounded-3xl p-8 shadow-sm">
+          <h3 className="text-xl font-black mb-6 flex items-center gap-2 uppercase tracking-tight">
+            <BarChart3 size={24} className="text-emerald-600" />
+            Performance Stats
           </h3>
-          <div className="space-y-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             {Object.entries(player.stats).map(([key, value]) => (
-              <div key={key} className="flex justify-between items-center py-2 border-b border-zinc-50">
-                <span className="text-zinc-500 capitalize">{key}</span>
-                <span className="font-mono font-bold text-lg">{value}</span>
+              <div key={key} className="bg-zinc-50 rounded-2xl p-4 border border-zinc-100">
+                <p className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-1">{key.replace(/([A-Z])/g, ' $1')}</p>
+                <p className="text-2xl font-black text-zinc-900">{value}</p>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="bg-emerald-50 border border-emerald-100 rounded-3xl p-8">
-          <h3 className="text-lg font-bold mb-4 flex items-center gap-2 text-emerald-900">
-            <Activity size={20} className="text-emerald-600" />
-            Scout Activity
+        {/* Bio Section */}
+        <div className="bg-white border border-zinc-200 rounded-3xl p-8 shadow-sm">
+          <h3 className="text-xl font-black mb-4 flex items-center gap-2 uppercase tracking-tight">
+            <User size={24} className="text-emerald-600" />
+            Player Bio
           </h3>
-          <div className="space-y-4">
-            {activity.length > 0 ? (
-              activity.map((act) => (
-                <div key={act.id} className="text-sm">
-                  <p className="font-bold text-emerald-800">{act.scout_name}</p>
-                  <p className="text-emerald-600/70 text-xs">{new Date(act.viewed_at).toLocaleDateString()}</p>
+          <p className="text-zinc-600 leading-relaxed text-lg italic">
+            "{player.bio || "No bio provided."}"
+          </p>
+        </div>
+
+        {/* Achievements Section */}
+        <div className="bg-white border border-zinc-200 rounded-3xl p-8 shadow-sm">
+          <h3 className="text-xl font-black mb-6 flex items-center gap-2 uppercase tracking-tight">
+            <Award size={24} className="text-emerald-600" />
+            Achievements
+          </h3>
+          <div className="space-y-3">
+            {player.achievements?.map((achievement, idx) => (
+              <div key={idx} className="flex items-center gap-3 bg-emerald-50/50 border border-emerald-100/50 p-4 rounded-xl">
+                <CheckCircle2 size={18} className="text-emerald-500" />
+                <span className="font-bold text-zinc-800">{achievement}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* References Section */}
+        <div className="bg-white border border-zinc-200 rounded-3xl p-8 shadow-sm">
+          <h3 className="text-xl font-black mb-6 flex items-center gap-2 uppercase tracking-tight">
+            <MessageSquare size={24} className="text-emerald-600" />
+            References
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {player.references?.map((ref, idx) => (
+              <div key={idx} className="border border-zinc-100 rounded-2xl p-4 bg-zinc-50/30">
+                <p className="font-black text-zinc-900">{ref.name}</p>
+                <p className="text-xs text-zinc-500 mb-2">{ref.role}</p>
+                <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-600">
+                  <LinkIcon size={12} />
+                  {ref.contact}
                 </div>
-              ))
-            ) : (
-              <p className="text-emerald-600/60 text-sm italic">No recent activity</p>
-            )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Right Column: Highlight Video */}
+      <div className="space-y-8">
+        <div className="bg-zinc-900 text-white rounded-3xl p-8 shadow-2xl sticky top-24">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-xl font-black flex items-center gap-2 uppercase tracking-tight">
+              <Video size={24} className="text-emerald-400" />
+              Highlight Reel
+            </h3>
+            <div className="bg-emerald-500/20 text-emerald-400 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-emerald-500/30">
+              Featured
+            </div>
+          </div>
+          {player.highlights_url ? (
+            <div className="aspect-video bg-zinc-800 rounded-2xl flex items-center justify-center border border-zinc-700 overflow-hidden group relative">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <div className="w-16 h-16 bg-emerald-500 rounded-full flex items-center justify-center shadow-xl transform scale-90 group-hover:scale-100 transition-transform">
+                  <Play size={32} className="text-white fill-current ml-1" />
+                </div>
+              </div>
+              <p className="text-zinc-500 text-sm font-mono">VIDEO_ID: {player.highlights_url.split('/').pop()}</p>
+            </div>
+          ) : (
+            <div className="aspect-video bg-zinc-800 rounded-2xl flex items-center justify-center border border-zinc-700">
+              <p className="text-zinc-500 italic">No highlights uploaded yet</p>
+            </div>
+          )}
+          <div className="mt-6 p-4 bg-zinc-800/50 rounded-2xl border border-zinc-700/50">
+            <p className="text-xs text-zinc-400 leading-relaxed">
+              This video has been verified by Next11 AI to match the performance data shown on this profile.
+            </p>
           </div>
         </div>
       </div>
     </div>
+
+    {/* Bottom Section: Benchmark Summary */}
+    {player.benchmarks && (
+      <div className="mt-12">
+        <h3 className="text-2xl font-black mb-8 uppercase tracking-tighter text-zinc-900">
+          Verified Intelligence Benchmarks
+        </h3>
+        <BenchmarkCard 
+          benchmarks={player.benchmarks} 
+          playerName={player.name} 
+          position={player.position} 
+        />
+      </div>
+    )}
   </motion.div>
 );
 

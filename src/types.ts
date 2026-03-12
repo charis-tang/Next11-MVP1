@@ -21,13 +21,18 @@ export interface PlayerBenchmarks {
 export interface Player {
   id: number;
   name: string;
+  age: number;
   position: string;
   location: string;
   grad_year: number;
+  height: string;
+  weight: string;
   stats: PlayerStats;
   benchmarks?: PlayerBenchmarks;
   highlights_url: string;
   bio: string;
+  achievements: string[];
+  references: { name: string; role: string; contact: string }[];
   created_at: string;
 }
 
