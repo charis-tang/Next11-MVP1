@@ -42,7 +42,7 @@ if (playerCount.count === 0) {
       name: "Julian Rivera",
       age: 16,
       position: "Central Midfielder",
-      location: "Oakland",
+      location: "Los Angeles, CA",
       grad_year: 2026,
       height: "5'10\"",
       weight: "155 lbs",
@@ -59,9 +59,9 @@ if (playerCount.count === 0) {
       },
       highlights_url: "https://example.com/julian-highlights",
       bio: "Technical playmaker with a high football IQ. Looking to play at the D1 level.",
-      achievements: ["All-State First Team 2025", "Regional ODP Selection", "Oakland Cup MVP"],
+      achievements: ["All-State First Team 2025", "Regional ODP Selection", "LA Cup MVP"],
       references: [
-        { name: "Coach Mike Smith", role: "Head Coach, Oakland FC", contact: "mike@oaklandfc.com" },
+        { name: "Coach Mike Smith", role: "Head Coach, LA Galaxy Academy", contact: "mike@lagalaxy.com" },
         { name: "Sarah Jenkins", role: "Technical Director", contact: "sarah@academy.com" }
       ]
     },
@@ -69,7 +69,7 @@ if (playerCount.count === 0) {
       name: "Marcus Chen",
       age: 17,
       position: "Winger",
-      location: "San Francisco",
+      location: "Chicago, IL",
       grad_year: 2025,
       height: "5'8\"",
       weight: "145 lbs",
@@ -88,14 +88,14 @@ if (playerCount.count === 0) {
       bio: "Dynamic winger with pace and clinical finishing. 4-year varsity starter.",
       achievements: ["League Golden Boot 2024", "State Champion 2024"],
       references: [
-        { name: "Coach David Lee", role: "Varsity Coach", contact: "dlee@sfhigh.edu" }
+        { name: "Coach David Lee", role: "Varsity Coach", contact: "dlee@chicago-soccer.edu" }
       ]
     },
     {
       name: "Sarah Williams",
       age: 16,
       position: "Center Back",
-      location: "Oakland",
+      location: "Atlanta, GA",
       grad_year: 2026,
       height: "5'11\"",
       weight: "160 lbs",
@@ -114,14 +114,14 @@ if (playerCount.count === 0) {
       bio: "Commanding presence in defense. Strong communicator and tactical leader.",
       achievements: ["Defensive Player of the Year 2025", "Honor Roll Student"],
       references: [
-        { name: "Coach Robert Brown", role: "Club Coach", contact: "rbrown@soccer.com" }
+        { name: "Coach Robert Brown", role: "Club Coach", contact: "rbrown@atlanta-united.com" }
       ]
     },
     {
       name: "Leo Rodriguez",
       age: 15,
       position: "Goalkeeper",
-      location: "Berkeley",
+      location: "New York, NY",
       grad_year: 2027,
       height: "6'2\"",
       weight: "175 lbs",
@@ -140,7 +140,7 @@ if (playerCount.count === 0) {
       bio: "Agile shot-stopper with great distribution. Trained with regional ODP teams.",
       achievements: ["Regional ODP Pool", "Junior Varsity Captain"],
       references: [
-        { name: "Coach Elena Gomez", role: "GK Coach", contact: "egomez@keepers.com" }
+        { name: "Coach Elena Gomez", role: "GK Coach", contact: "egomez@ny-redbulls.com" }
       ]
     }
   ];
